@@ -41,7 +41,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" style="width: 100%" @click="submitForm">登录</el-button>
+          <el-button type="primary" style="width: 100%" >登录</el-button>
         </el-form-item>
 
         <el-form-item>
@@ -54,17 +54,19 @@
 </template>
 <script>
 export default {
-  data() {
+    data() {
         var checkAge = (rule, value, callback) => {
-        if (!/^1[3456789]\d{9}$/.test(value)) {
-          return callback(new Error('年龄不能为空'));
+        if (!/^1[3456789]\d{9}$/.test(value)) return callback(new Error('手机号码格式不对'));
+        callback()
         }
-    return {
+      return {
       form: { phone: "", password: "", code: "", checked: "" },
       rules: {
         phone: [
               { required: true, message: "请输入手机号", trigger: "blur" },
-           
+              {
+                  validator:checkAge
+              }
         ],
         password: [
             { required: true, message: "请输入密码", trigger: "blur" },
@@ -80,19 +82,9 @@ export default {
       }
     };
   },
-  methods:{
-    submitForm() {
-      this.$refs.form.validate(value => {
-        if (value) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    }
-  }
-};
+
+}
+
 </script>
 <style lang='less'>
 .login {
