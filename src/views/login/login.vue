@@ -7,12 +7,92 @@
         <span class="symbol">|</span>
         <span>用户登录</span>
       </div>
+      <el-form :model="form" class="form" :rules="rules" ref="form">
+        <el-form-item prop="phone">
+          <el-input v-model="form.phone" placeholder="请输入手机号" prefix-icon="el-icon-user"></el-input>
+        </el-form-item>
+
+        <el-form-item prop="password">
+          <el-input
+            v-model="form.password"
+            placeholder="请输入密码"
+            prefix-icon="el-icon-lock"
+            :show-password="true"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item prop="code">
+          <el-row>
+            <el-col :span="16">
+              <el-input v-model="form.code" placeholder="请输入验证码" prefix-icon="el-icon-key"></el-input>
+            </el-col>
+            <el-col :span="8">
+              <img class="key" src="@/assets/img/key.jpg" alt />
+            </el-col>
+          </el-row>
+        </el-form-item>
+
+        <el-form-item prop="checked">
+          <el-checkbox v-model="form.checked">
+            我已阅读并同意
+            <el-link type="primary">用户协议</el-link>和
+            <el-link type="primary">隐私条款</el-link>
+          </el-checkbox>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" style="width: 100%" @click="submitForm">登录</el-button>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" style="width: 100%">注册</el-button>
+        </el-form-item>
+      </el-form>
     </div>
     <img src="@/assets/img/login_banner_ele.png" alt />
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+        var checkAge = (rule, value, callback) => {
+        if (!/^1[3456789]\d{9}$/.test(value)) {
+          return callback(new Error('年龄不能为空'));
+        }
+    return {
+      form: { phone: "", password: "", code: "", checked: "" },
+      rules: {
+        phone: [
+              { required: true, message: "请输入手机号", trigger: "blur" },
+           
+        ],
+        password: [
+            { required: true, message: "请输入密码", trigger: "blur" },
+            { min: 6, max: 16, message: "长度在 6 到 16 个字符", trigger: "blur" }
+        ],
+        code: [
+          { required: true, message: "请输入验证码", trigger: "blur" },
+          { min: 4, max: 4, message: "长度是 4 个字符", trigger: "blur" }
+        ],
+        checked: [
+          { required: true, message: "请阅读隐私条款并勾选", trigger: "change" }
+        ]
+      }
+    };
+  },
+  methods:{
+    submitForm() {
+      this.$refs.form.validate(value => {
+        if (value) {
+          alert("submit!");
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    }
+  }
+};
 </script>
 <style lang='less'>
 .login {
@@ -25,10 +105,10 @@ export default {};
     width: 478px;
     height: 550px;
     background: #f5f5f5;
-    padding: 47px 42px;
+    padding: 47px;
 
     .logo {
-        display: flex;
+      display: flex;
       align-items: center;
       img {
         width: 22px;
@@ -49,6 +129,13 @@ export default {};
         // width: 1px;
         // height: 28px;
         color: #c7c7c7;
+      }
+    }
+    .form {
+      margin-top: 20px;
+      .key {
+        width: 100%;
+        height: 40px;
       }
     }
   }
