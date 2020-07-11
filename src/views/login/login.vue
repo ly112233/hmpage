@@ -27,7 +27,7 @@
               <el-input v-model="form.code" placeholder="请输入验证码" prefix-icon="el-icon-key"></el-input>
             </el-col>
             <el-col :span="8">
-              <img class="key" src="@/assets/img/key.jpg" alt />
+              <img class="key" :src="codeUrl" @click='keyimg' ref="keyimgtoggle" alt />
             </el-col>
           </el-row>
         </el-form-item>
@@ -41,36 +41,43 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" style="width: 100%" >登录</el-button>
+          <el-button type="primary" style="width: 100%" @click="submit">登录</el-button>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" style="width: 100%">注册</el-button>
+          <el-button type="primary" style="width: 100%" @click="register">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
     <img src="@/assets/img/login_banner_ele.png" alt />
+    <register ref="register"></register>
   </div>
 </template>
 <script>
+import register from "@/views/login/register.vue";
 export default {
-    data() {
-        var checkAge = (rule, value, callback) => {
-        if (!/^1[3456789]\d{9}$/.test(value)) return callback(new Error('手机号码格式不对'));
-        callback()
-        }
-      return {
+  components: {
+    register
+  },
+  data() {
+    var checkAge = (rule, value, callback) => {
+      if (!/^1[3456789]\d{9}$/.test(value))
+        return callback(new Error("手机号码格式不对"));
+      callback();
+    };
+    return {
+      codeUrl:process.env.VUE_APP_URL+'/captcha?type=login',
       form: { phone: "", password: "", code: "", checked: "" },
       rules: {
         phone: [
-              { required: true, message: "请输入手机号", trigger: "blur" },
-              {
-                  validator:checkAge
-              }
+          { required: true, message: "请输入手机号", trigger: "blur" },
+          {
+            validator: checkAge
+          }
         ],
         password: [
-            { required: true, message: "请输入密码", trigger: "blur" },
-            { min: 6, max: 16, message: "长度在 6 到 16 个字符", trigger: "blur" }
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, max: 16, message: "长度在 6 到 16 个字符", trigger: "blur" }
         ],
         code: [
           { required: true, message: "请输入验证码", trigger: "blur" },
@@ -82,9 +89,25 @@ export default {
       }
     };
   },
-
-}
-
+  methods: {
+    //登录验证
+    submit() {
+      this.$refs.form.validate(result => {
+        if (result) {
+          this.$message.success("登录成功");
+        } else {
+          this.$message.error("登录失败");
+        }
+      });
+    },
+    register() {
+      this.$refs.register.isShow = true;
+    },
+    keyimg(){
+         this.$refs.keyimgtoggle.src=process.env.VUE_APP_URL+'/captcha?type=login&t'+Math.random()*111
+    }
+  }
+};
 </script>
 <style lang='less'>
 .login {
