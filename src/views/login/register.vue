@@ -40,47 +40,62 @@
       </el-form-item>
 
       <el-form-item label="图形码" required>
-        <el-col :span="16">
+        <el-col :span="14">
           <el-form-item prop="code">
             <el-input v-model="ruleForm.code"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="7" :offset="1">
+        <el-col :span="9" :offset="1">
           <img class="register-code" :src="registerUrl" @click="imgclick" ref="toggle" alt />
         </el-col>
       </el-form-item>
 
       <el-form-item label="验证码" required>
-        <el-col :span="16">
+        <el-col :span="14">
           <el-form-item prop="rcode">
             <el-input v-model="ruleForm.rcode"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="7" :offset="1">
-          <el-button>获取用户验证码</el-button>
+        <el-col :span="9" :offset="1">
+          <el-button @click="getRcode" :disabled="tolalTime<5">
+            获取用户验证码
+            <span v-if="tolalTime!=5">{{tolalTime+1}}秒</span>
+          </el-button>
         </el-col>
       </el-form-item>
       <el-form-item>
         <el-button @click="isShow = false">取 消</el-button>
         <el-button type="primary" @click="submit">确 定</el-button>
+        <el-button @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>
 </template>
 <script>
+// import axios from "axios";
+import { getrcode,registerUser} from "@/api/login.js";
 export default {
+  watch: {
+    isShow(newVal){
+      if(newVal == false){
+        this.$refs.ruleForm.resetFields()
+        this.imageUrl=''
+      }
+    }
+  },
   data() {
-      var checkAge = (rule, value, callback) => {
+    var checkAge = (rule, value, callback) => {
       if (!/^1[3456789]\d{9}$/.test(value))
         return callback(new Error("手机号码格式不对"));
       callback();
     };
-     var postbox = (rule, value, callback) => {
+    var postbox = (rule, value, callback) => {
       if (!/^[a-zA-Z0-9_-]+@([a-zA-Z0-9]+\.)+(com|cn|net|org)$/.test(value))
         return callback(new Error("邮箱格式不对"));
       callback();
     };
     return {
+      tolalTime: 5,
       isShow: false,
       registerUrl: process.env.VUE_APP_URL + "/captcha?type=sendsms",
       uploadUrl: process.env.VUE_APP_URL + "/uploads",
@@ -97,8 +112,8 @@ export default {
       imageUrl: "",
       rules: {
         avatar: [
-          { required: true, message: "头像", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { required: true, message: "请选择一张头像", trigger: "blur" }
+          // { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
         username: [
           { required: true, message: "用户名", trigger: "blur" },
@@ -106,11 +121,11 @@ export default {
         ],
         email: [
           { required: true, message: "邮箱", trigger: "blur" },
-          {validator: postbox}
+          { validator: postbox }
         ],
         phone: [
           { required: true, message: "手机号", trigger: "blur" },
-          {validator: checkAge}
+          { validator: checkAge }
         ],
         password: [
           { required: true, message: "密码", trigger: "blur" },
@@ -131,7 +146,8 @@ export default {
   methods: {
     handleAvatarSuccess(res) {
       console.log(res);
-      this.form.avatar = res.data.file_path;
+      this.ruleForm.avatar = res.data.file_path;
+      this.$refs.ruleForm.validateField(["avatar"]);
       this.imageUrl = process.env.VUE_APP_URL + "/" + res.data.file_path;
     },
     beforeAvatarUpload(file) {
@@ -146,20 +162,76 @@ export default {
       }
       return isJPG && isLt2M;
     },
-
+    // cancel() {
+    //   this.$refs.ruleForm.clearValidate();
+    //   this.$refs.ruleForm.resetFields();
+    //   this.ruleForm.avatar.resetFields();
+    // },
     //确定按钮点击
     submit() {
       this.$refs.ruleForm.validate(result => {
         if (result) {
-          this.$message.success("验证通过");
+          registerUser(this.ruleForm).then(res=>{
+            console.log(res);
+          if (res.data.code==200) {
+            this.isShow=false;
+          this.$message.success("注册成功");
+
+          }
+            
+          })
         } else {
           this.$message.error("验证失败");
         }
       });
     },
+
+    resetForm() {
+      (this.imageUrl = ""),
+        (this.ruleForm.avatar = ""),
+        this.$refs.ruleForm.resetFields();
+    },
     // 点击换验证码图片
-    imgclick(){
-        this.$refs.toggle.src=process.env.VUE_APP_URL+'/captcha?type=sendsms&t'+Math.random()*111
+    imgclick() {
+      this.$refs.toggle.src =
+        process.env.VUE_APP_URL +
+        "/captcha?type=sendsms&t" +
+        Math.random() * 111;
+    },
+    getRcode() {
+      let num = 0;
+      this.$refs.ruleForm.validateField(["phone", "code"], errorMessage => {
+        if (errorMessage == "") {
+          num++;
+        }
+        if (num == 2) {
+          // axios({
+          //   url: process.env.VUE_APP_URL + "/sendsms",
+          //   method: "post",
+          //   data: {
+          //     code: this.ruleForm.code,
+          //     phone: this.ruleForm.phone
+          //   },
+          //   withCredentials: true
+
+          this.tolalTime--;
+          let _interval = setInterval(() => {
+            this.tolalTime--;
+            if (this.tolalTime <= -1) {
+              clearInterval(_interval);
+              this.tolalTime = 5;
+            }
+          }, 1000);
+
+          getrcode({
+            code: this.ruleForm.code,
+            phone: this.ruleForm.phone
+          }).then(res => {
+            // console.log(res);
+            this.$message.success(res.data.data.captcha + "");
+          });
+        }
+      });
     }
   }
 };
