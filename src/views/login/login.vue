@@ -27,7 +27,7 @@
               <el-input v-model="form.code" placeholder="请输入验证码" prefix-icon="el-icon-key"></el-input>
             </el-col>
             <el-col :span="8">
-              <img class="key" :src="codeUrl" @click='keyimg' ref="keyimgtoggle" alt />
+              <img class="key" :src="codeUrl" @click="keyimg" ref="keyimgtoggle" alt />
             </el-col>
           </el-row>
         </el-form-item>
@@ -55,8 +55,8 @@
 </template>
 <script>
 import register from "@/views/login/register.vue";
-import {getLogin} from '@/api/login.js';
-import {saveLocal} from '@/utils/local.js'
+import { getLogin } from "@/api/login.js";
+import { saveLocal } from "@/utils/local.js";
 export default {
   components: {
     register
@@ -68,7 +68,7 @@ export default {
       callback();
     };
     return {
-      codeUrl:process.env.VUE_APP_URL+'/captcha?type=login',
+      codeUrl: process.env.VUE_APP_URL + "/captcha?type=login",
       form: { phone: "", password: "", code: "", checked: "" },
       rules: {
         phone: [
@@ -96,14 +96,12 @@ export default {
     submit() {
       this.$refs.form.validate(result => {
         if (result) {
-          getLogin(this.form).then(res=>{
+          getLogin(this.form).then(res => {
             // console.log(res);
             saveLocal(res.data.token);
-            this.$router.push('/layout')
-
-          })
-          // this.$message.success("登录成功");
-
+            this.$message.success("登录成功");
+            this.$router.push("/layout");
+          });
         } else {
           this.$message.error("登录失败");
         }
@@ -111,10 +109,10 @@ export default {
     },
     register() {
       this.$refs.register.isShow = true;
-
     },
-    keyimg(){
-         this.$refs.keyimgtoggle.src=process.env.VUE_APP_URL+'/captcha?type=login&t'+Math.random()*111
+    keyimg() {
+      this.$refs.keyimgtoggle.src =
+        process.env.VUE_APP_URL + "/captcha?type=login&t" + Math.random() * 111;
     }
   }
 };
