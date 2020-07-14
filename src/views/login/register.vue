@@ -117,7 +117,7 @@ export default {
         ],
         username: [
           { required: true, message: "用户名", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { min: 3, max: 15, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
         email: [
           { required: true, message: "邮箱", trigger: "blur" },
@@ -129,15 +129,15 @@ export default {
         ],
         password: [
           { required: true, message: "密码", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { min: 3, max: 16, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
         code: [
           { required: true, message: "图形码", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { min: 3, max: 15, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
         rcode: [
           { required: true, message: "验证码", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+          { min: 3, max: 15, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ]
       }
     };
@@ -173,9 +173,9 @@ export default {
         if (result) {
           registerUser(this.ruleForm).then(res=>{
             console.log(res);
-          if (res.data.code==200) {
+          if (res.code==200) {
+            this.$message.success("注册成功");
             this.isShow=false;
-          this.$message.success("注册成功");
 
           }
             
@@ -227,8 +227,8 @@ export default {
             code: this.ruleForm.code,
             phone: this.ruleForm.phone
           }).then(res => {
-            // console.log(res);
-            this.$message.success(res.data.data.captcha + "");
+            console.log(res);
+            this.$message.success(res.data.captcha + "");
           });
         }
       });

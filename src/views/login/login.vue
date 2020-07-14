@@ -55,6 +55,8 @@
 </template>
 <script>
 import register from "@/views/login/register.vue";
+import {getLogin} from '@/api/login.js';
+import {saveLocal} from '@/utils/local.js'
 export default {
   components: {
     register
@@ -77,7 +79,7 @@ export default {
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, max: 16, message: "长度在 6 到 16 个字符", trigger: "blur" }
+          { min: 3, max: 16, message: "长度在 6 到 16 个字符", trigger: "blur" }
         ],
         code: [
           { required: true, message: "请输入验证码", trigger: "blur" },
@@ -94,7 +96,14 @@ export default {
     submit() {
       this.$refs.form.validate(result => {
         if (result) {
-          this.$message.success("登录成功");
+          getLogin(this.form).then(res=>{
+            // console.log(res);
+            saveLocal(res.data.token);
+            this.$router.push('/layout')
+
+          })
+          // this.$message.success("登录成功");
+
         } else {
           this.$message.error("登录失败");
         }
@@ -102,6 +111,7 @@ export default {
     },
     register() {
       this.$refs.register.isShow = true;
+
     },
     keyimg(){
          this.$refs.keyimgtoggle.src=process.env.VUE_APP_URL+'/captcha?type=login&t'+Math.random()*111
