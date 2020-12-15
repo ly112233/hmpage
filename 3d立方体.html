@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <style>
+        body{
+            background: #fef3e7;
+        }
+        /*最外层容器样式*/
+        .wrap {
+            width: 400px;
+            height: 400px;
+            margin: 200px auto 0;
+            position: relative;
+        }
+
+        /*包裹所有容器样式*/
+        .cube {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            transform: rotateX(-130deg) rotateY(-180deg);
+            -webkit-transform: rotateX(-130deg) rotateY(-180deg);
+            animation: lieGirl linear 20s infinite;
+            -webkit-animation: lieGirl linear 20s infinite;
+        }
+        @keyframes lieGirl {
+            from {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+            to {
+                transform: rotateX(360deg) rotateY(360deg);
+            }
+        }
+        @-webkit-keyframes lieGirl {
+            from {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+            to {
+                transform: rotateX(360deg) rotateY(360deg);
+            }
+        }
+
+        .cube div {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            opacity: 0.8;
+            transition: all .4s;
+            -webkit-transition: all .4s;
+        }
+
+        /*定义所有图片样式*/
+        .pic {
+            width: 400px;
+            height: 400px;
+        }
+        /*定义小正方体样式*/
+        .cube span {
+            display: block;
+            width: 120px;
+            height: 120px;
+            position: absolute;
+            top: 120px;
+            left: 120px;
+        }
+
+        .cube .in_pic {
+            width: 120px;
+            height: 120px;
+        }
+
+        .cube .in_front {
+            transform: rotateY(0deg) translateZ(60px);
+            -webkit-transform: rotateY(0deg) translateZ(60px);
+        }
+
+        .cube .in_back {
+            transform: translateZ(-60px) rotateY(180deg);
+            -webkit-transform: translateZ(-60px) rotateY(180deg);
+        }
+
+        .cube .in_left {
+            transform: rotateY(-90deg) translateZ(60px);
+            -webkit-transform: rotateY(-90deg) translateZ(60px);
+        }
+
+        .cube .in_right {
+            transform: rotateY(90deg) translateZ(60px);
+            -webkit-transform: rotateY(90deg) translateZ(60px);
+        }
+
+        .cube .in_top {
+            transform: rotateX(90deg) translateZ(60px);
+            -webkit-transform: rotateX(90deg) translateZ(60px);
+        }
+
+        .cube .in_bottom {
+            transform: rotateX(-90deg) translateZ(60px);
+            -webkit-transform: rotateX(-90deg) translateZ(60px);
+        }
+
+        /*鼠标移入后样式*/
+        .out_front {
+            transform: rotateY(0deg) translateZ(400px);
+            -webkit-transform: rotateY(0deg) translateZ(400px);
+        }
+
+        .out_back {
+            transform: translateZ(-400px) rotateY(180deg);
+            -webkit-transform: translateZ(-400px) rotateY(180deg);
+        }
+
+        .out_left {
+            transform: rotateY(-90deg) translateZ(400px);
+            -webkit-transform: rotateY(-90deg) translateZ(400px);
+        }
+
+        .out_right {
+            transform: rotateY(90deg) translateZ(400px);
+            -webkit-transform: rotateY(90deg) translateZ(400px);
+        }
+
+        .out_top {
+            transform: rotateX(90deg) translateZ(400px);
+            -webkit-transform: rotateX(90deg) translateZ(400px);
+        }
+
+        .out_bottom {
+            transform: rotateX(-90deg) translateZ(400px);
+            -webkit-transform: rotateX(-90deg) translateZ(400px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 外层最大容器 -->
+    <div class="wrap">
+        <!--包裹所有元素的容器-->
+        <div class="cube">
+            <!--前面图片 -->
+            <div class="out_front">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20191129/2019112916313715808.jpg" class="pic" />
+            </div>
+            <!--后面图片 -->
+            <div class="out_back">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20191115/2019111511160269236.jpg" class="pic" />
+            </div>
+            <!--左面图片 -->
+            <div class="out_left">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20200120/2020012014354871886.jpg" class="pic" />
+            </div>
+            <!--右面图片 -->
+            <div class="out_right">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20191114/2019111412071786695.jpg" class="pic" />
+            </div>
+            <!--上面图片 -->
+            <div class="out_top">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20191114/2019111411173483668.jpg" class="pic" />
+            </div>
+            <!--下面图片 -->
+            <div class="out_bottom">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20191114/2019111412074936496.jpg" class="pic" />
+            </div>
+
+            <!--小正方体 -->
+            <span class="in_front">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20191129/2019112916313715808.jpg" class="in_pic" />
+            </span>
+            <span class="in_back">
+                 <img src="https://uploadstatic.mihoyo.com/contentweb/20191115/2019111511160269236.jpg" class="in_pic" />
+            </span>
+            <span class="in_left">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20200120/2020012014354871886.jpg" class="in_pic" />
+            </span>
+            <span class="in_right">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20191114/2019111412071786695.jpg" class="in_pic" />
+            </span>
+            <span class="in_top">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20191114/2019111411173483668.jpg" class="in_pic" />
+            </span>
+            <span class="in_bottom">
+                <img src="https://uploadstatic.mihoyo.com/contentweb/20191114/2019111412074936496.jpg" class="in_pic" />
+            </span>
+        </div>
+
+    </div>
+</body>
+
+</html>
